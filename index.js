@@ -7,10 +7,11 @@ const { URL } = require('url');
 const app = express();
 const port = process.env.PORT || 3000;
 
+
 app.use(morgan('tiny'));
 
 const regex = /\s+(href|src)=['"](.*?)['"]/g;
-
+const path = require('path');
 const getMimeType = url => {
     if(url.indexOf('?') !== -1) { // remove url query so we can have a clean extension
         url = url.split("?")[0];
@@ -18,6 +19,9 @@ const getMimeType = url => {
     if(mime.getType(url) === 'application/x-msdownload') return 'text/html';
     return mime.getType(url) || 'text/html'; // if there is no extension return as html
 };
+app.get('/viz',function(req,res) {
+    res.sendFile(path.join(__dirname+'/viz.html'));
+  });
 
 app.get('/', (req, res) => {
     const { url } = req.query; // get url parameter
